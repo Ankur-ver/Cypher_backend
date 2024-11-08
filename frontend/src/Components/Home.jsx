@@ -9,7 +9,8 @@ function Home() {
   return (
     <>
    <Navbar />
-    <Hero />
+    <Hero />          <Works/>
+
     <h1 id='testimonial'>  Features</h1>
     <Feature />
     <h1 id='testimonial'>Testimonials</h1>
