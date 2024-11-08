@@ -7,10 +7,11 @@ const contractABI = ABI;
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 function BookAppointment() {
-  const [doctorAddress, setDoctorAddress] = useState('');
+  const [doctorID, setDoctorID] = useState('');
   const [patientAddress, setPatientAddress] = useState('');
   const [date, setDate] = useState('');
   const [status, setStatus] = useState('');
+  const [hashToken, setHachToken] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,8 +24,11 @@ function BookAppointment() {
       const signer = await provider.getSigner();
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
+      //making a call to get patient id from patient addess
+      const res = await axios.get(`/getPatient/${patientAddress}`);
+      const patientId = res.data.patientId;
 
-      const tx = await contract.createAppointment(patientAddress, doctorAddress, date);
+      const tx = await contract.createAppointment(patientId, doctorID, date, hashToken);
       await tx.wait();
 
       // MongoDB data saving
@@ -47,9 +51,9 @@ function BookAppointment() {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          value={doctorAddress}
-          onChange={(e) => setDoctorAddress(e.target.value)}
-          placeholder="Doctor Address"
+          value={doctorID}
+          onChange={(e) => setDoctorID(e.target.value)}
+          placeholder="Doctor ID"
           required
         />
         <input
@@ -57,6 +61,13 @@ function BookAppointment() {
           value={patientAddress}
           onChange={(e) => setPatientAddress(e.target.value)}
           placeholder="Patient Address"
+          required
+        />
+        <input
+          type="text"
+          value={hashToken}
+          onChange={(e) => setHachToken(e.target.value)}
+          placeholder="Hash Token"
           required
         />
         <input

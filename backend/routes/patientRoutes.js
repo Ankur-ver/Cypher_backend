@@ -16,4 +16,19 @@ router.post('/register', async (req, res) => {
   }
 });
 
+//creating a route to get patient data based on the patientAddress
+const getPatient = async (req, res) => {
+  const { patientAddress } = req.params;
+  try {
+    const patient = await Patient.findOne({ address: patientAddress });
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+    res.status(200).json(patient);
+  } catch (error) {
+    res.status(500).json({ error: 'Error getting patient: ' + error.message });
+  }
+}
+router.get('/getPatient/:patientAddress', getPatient);
+
 module.exports = router;
